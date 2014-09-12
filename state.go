@@ -90,6 +90,11 @@ func (s *State) SetOffset( logfile string, pattern string, invPat string, offset
     l.File = fi
   }
 
+	// make sure map exists
+	if l.Matches == nil {
+		l.Matches = make(map[string]Match)
+	}
+
   // pattern known?
   match, matchFound := l.Matches[pattern]
   if !matchFound {
@@ -97,6 +102,13 @@ func (s *State) SetOffset( logfile string, pattern string, invPat string, offset
       InvMatches: make(map[string]InvMatch),
     }
   }
+
+	// make sure map exists
+	// this should never happen if the lookup above works,
+	// but there is at least one reported case of error due to a nil map.
+	if match.InvMatches == nil {
+		match.InvMatches = make(map[string]InvMatch)
+	}
 
   // don't care if we've already seen this inv pattern,
   // since we're going to overwrite it anyway
